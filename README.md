@@ -1,1 +1,1 @@
-# Captial-Chronicles
+# Capital Chronicles
