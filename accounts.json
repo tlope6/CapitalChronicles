@@ -1,0 +1,16 @@
+{
+  "tlope6": {
+    "password_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "data": {
+      "age": 18,
+      "has_job": true,
+      "income": 1200.0,
+      "necessities": 800.0,
+      "taxes": 180.0,
+      "net_income": 1020.0,
+      "total_expenses": 980.0,
+      "leftover": 220.0,
+      "status": "Student"
+    }
+  }
+}
