@@ -40,21 +40,21 @@ class CapitalChroniclesApp(tk.Tk):
         self.geometry("900x650")
         self.resizable(False, False)
 
-        # 🎨 HYBRID GRADIENT BACKGROUND
+        # Background gradient canvas
         self.gradient_canvas = tk.Canvas(self, width=900, height=650, highlightthickness=0)
         self.gradient_canvas.pack(fill="both", expand=True)
-        self.draw_gradient("#f4f7ff", "#d9e4ff")  # Soft white → soft blue
+        self.draw_gradient("#f4f7ff", "#d9e4ff")
 
         # Store user data
         self.accounts = load_accounts()
         self.current_user = None
         self.user_data = {}
 
-        # Create a container for pages
+        # Frame container for pages
         self.container = tk.Frame(self.gradient_canvas, bg="", highlightthickness=0)
         self.container.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Register frames
+        # Register app screens
         self.frames = {}
         for F in (IntroFrame, AuthFrame, MenuFrame, AdventureFrame, GoalsFrame):
             frame = F(parent=self.container, controller=self)
@@ -64,7 +64,6 @@ class CapitalChroniclesApp(tk.Tk):
         self.show_frame("IntroFrame")
 
     def draw_gradient(self, color1, color2):
-        """Draws a vertical gradient background."""
         for i in range(650):
             r1, g1, b1 = self.hex_to_rgb(color1)
             r2, g2, b2 = self.hex_to_rgb(color2)
@@ -72,10 +71,10 @@ class CapitalChroniclesApp(tk.Tk):
             r = int(r1 + (r2 - r1) * ratio)
             g = int(g1 + (g2 - g1) * ratio)
             b = int(b1 + (b2 - b1) * ratio)
-            color = f"#{r:02x}{g:02x}{b:02x}"
-            self.gradient_canvas.create_line(0, i, 900, i, fill=color)
+            self.gradient_canvas.create_line(0, i, 900, i, fill=f"#{r:02x}{g:02x}{b:02x}")
 
-    def hex_to_rgb(self, hex_color):
+    @staticmethod
+    def hex_to_rgb(hex_color):
         hex_color = hex_color.lstrip("#")
         return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
@@ -85,7 +84,7 @@ class CapitalChroniclesApp(tk.Tk):
         if hasattr(frame, "on_show"):
             frame.on_show()
 
-    # ------------------- LOGIN / SIGN UP -------------------
+    # Login system ---------------------------------------------------
     def login(self, username, password):
         if username not in self.accounts:
             messagebox.showerror("Login Failed", "User not found.")
@@ -119,7 +118,7 @@ class CapitalChroniclesApp(tk.Tk):
 
 
 # -------------------------------------------------------
-#  HELPER: WHITE "CARD" CONTAINER FOR ALL PAGES
+# Shared Card Frame (white box)
 # -------------------------------------------------------
 class CardFrame(tk.Frame):
     def __init__(self, parent):
@@ -136,15 +135,15 @@ class CardFrame(tk.Frame):
 
 
 # -------------------------------------------------------
-#  INTRO SCREEN
+# Intro Screen
 # -------------------------------------------------------
 class IntroFrame(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg="")
+        super().__init__(parent)
         self.controller = controller
 
         self.card = CardFrame(self)
-        self.card.pack(pady=20)
+        self.card.pack(pady=40)
 
         self.title_label = tk.Label(
             self.card, text="", font=("Montserrat", 34, "bold"),
@@ -161,7 +160,7 @@ class IntroFrame(tk.Frame):
         )
         subtitle.pack(pady=10)
 
-        start_btn = tk.Button(
+        tk.Button(
             self.card,
             text="Begin Your Journey",
             font=("Montserrat", 14, "bold"),
@@ -169,10 +168,8 @@ class IntroFrame(tk.Frame):
             fg="white",
             padx=20, pady=10,
             command=lambda: controller.show_frame("AuthFrame")
-        )
-        start_btn.pack(pady=30)
+        ).pack(pady=30)
 
-        # typewriter animation
         self.full_text = "CapitalChronicles"
         self.index = 0
 
@@ -189,22 +186,21 @@ class IntroFrame(tk.Frame):
 
 
 # -------------------------------------------------------
-#  LOGIN / SIGNUP SCREEN
+# Login / Signup Screen
 # -------------------------------------------------------
 class AuthFrame(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg="")
+        super().__init__(parent)
         self.controller = controller
 
         self.card = CardFrame(self)
-        self.card.pack()
+        self.card.pack(pady=40)
 
         tk.Label(
             self.card,
             text="Welcome Back, Traveler",
             font=("Montserrat", 20, "bold"),
-            fg="#283593",
-            bg="white"
+            fg="#283593", bg="white"
         ).pack(pady=20)
 
         form = tk.Frame(self.card, bg="white")
@@ -239,23 +235,20 @@ class AuthFrame(tk.Frame):
 
 
 # -------------------------------------------------------
-#  MENU SCREEN
+# Menu Screen
 # -------------------------------------------------------
 class MenuFrame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
-
         self.controller = controller
 
         self.card = CardFrame(self)
-        self.card.pack()
+        self.card.pack(pady=40)
 
         self.welcome_label = tk.Label(
             self.card,
-            text="",
-            font=("Montserrat", 20, "bold"),
-            fg="#1E3A8A",
-            bg="white"
+            text="", font=("Montserrat", 20, "bold"),
+            fg="#1E3A8A", bg="white"
         )
         self.welcome_label.pack(pady=20)
 
@@ -290,20 +283,19 @@ class MenuFrame(tk.Frame):
 
 
 # -------------------------------------------------------
-#  FINANCIAL ADVENTURE SCREEN
+# Adventure Calculator
 # -------------------------------------------------------
 class AdventureFrame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
-
         self.controller = controller
+
         self.card = CardFrame(self)
-        self.card.pack()
+        self.card.pack(pady=40)
 
         tk.Label(
             self.card, text="Your Financial Chapter",
-            font=("Montserrat", 20, "bold"),
-            fg="#283593", bg="white"
+            font=("Montserrat", 20, "bold"), fg="#283593", bg="white"
         ).pack(pady=20)
 
         form = tk.Frame(self.card, bg="white")
@@ -326,11 +318,18 @@ class AdventureFrame(tk.Frame):
             command=self.calculate
         ).pack(pady=20)
 
+        tk.Button(
+            self.card,
+            text="Back",
+            font=("Montserrat", 12, "bold"),
+            bg="#F44336", fg="white",
+            padx=20, pady=5,
+            command=lambda: controller.show_frame("MenuFrame")
+        ).pack(pady=10)
+
         self.result = tk.Label(
-            self.card, text="",
-            bg="white", fg="#1E3A8A",
-            font=("Montserrat", 12),
-            wraplength=500
+            self.card, text="", bg="white", fg="#1E3A8A",
+            font=("Montserrat", 12), wraplength=500
         )
         self.result.pack()
 
@@ -345,12 +344,11 @@ class AdventureFrame(tk.Frame):
         net = income - taxes
         leftover = net - nec
 
-        if age < 18:
-            status = "Child"
-        elif age <= 22:
-            status = "Student"
-        else:
-            status = "Working Adult"
+        status = (
+            "Child" if age < 18 else
+            "Student" if age <= 22 else
+            "Working Adult"
+        )
 
         msg = (
             f"Status: {status}\n"
@@ -363,25 +361,187 @@ class AdventureFrame(tk.Frame):
 
 
 # -------------------------------------------------------
-#  GOALS SCREEN (placeholder)
+# Goals / Quest System
 # -------------------------------------------------------
 class GoalsFrame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+        self.controller = controller
 
+        # Card starts lower for animation
         self.card = CardFrame(self)
-        self.card.pack()
+        self.card.pack(pady=40)
 
         tk.Label(
-            self.card, text="Scripted Goals",
+            self.card, text="Scripted Quests",
             font=("Montserrat", 20, "bold"), fg="#283593", bg="white"
-        ).pack(pady=20)
+        ).pack(pady=10)
 
         tk.Label(
             self.card,
-            text="Goal system coming soon.",
-            font=("Montserrat", 12),
-            fg="#1E3A8A",
-            bg="white"
-        ).pack()
+            text="Track your financial quests and mark them as completed.",
+            font=("Montserrat", 11),
+            fg="#1E3A8A", bg="white",
+            wraplength=520, justify="center"
+        ).pack(pady=5)
 
+        #quest lists
+        self.quests_frame = tk.Frame(self.card, bg="white")
+        self.quests_frame.pack(pady=10)
+
+        #adding in the list
+        add_frame = tk.Frame(self.card, bg="white")
+        add_frame.pack(pady=10)
+
+        tk.Label(add_frame, text="Add your own quest:",
+                 font=("Montserrat", 11), bg="white", fg="#283593").grid(row=0, column=0)
+
+        self.new_quest_entry = tk.Entry(add_frame, font=("Montserrat", 11), width=32)
+        self.new_quest_entry.grid(row=1, column=0, padx=5, pady=5)
+
+        tk.Button(
+            add_frame, text="Add Quest",
+            font=("Montserrat", 10, "bold"), bg="#1976D2", fg="white",
+            command=self.add_custom_quest
+        ).grid(row=1, column=1, padx=5)
+
+
+        #savings button
+        tk.Button(
+            self.card,
+            text="View Savings Report",
+            font=("Montserrat", 11, "bold"),
+            bg="#64B5F6", fg="white",
+            padx=16, pady=6,
+            command=self.show_savings
+        ).pack(pady=5)
+
+
+        #back button
+        tk.Button(
+            self.card, text="Back to Menu",
+            font=("Montserrat", 11, "bold"),
+            bg="#F44336", fg="white",
+            command=lambda: controller.show_frame("MenuFrame")
+        ).pack(pady=10)
+
+
+        #internal state
+        self.quests = []
+        self.quest_vars = []
+
+    def on_show(self):
+        # Start animation
+        self.anim_pady = 200
+        self.target_pady = 40
+        self.animate_slide_in()
+
+        data = self.controller.user_data
+        # self.quests = data.get("goals", self.default_quests())
+        self.render_quests()
+
+    def animate_slide_in(self):
+        if self.anim_pady > self.target_pady:
+            self.anim_pady -= 10
+            self.card.pack_configure(pady=self.anim_pady)
+            self.after(15, self.animate_slide_in)
+
+    # def default_quests(self):
+    #     return [
+    #         {"title": "Build an emergency fund of $500", "completed": False, "type": "Main Quest"},
+    #         {"title": "Track all expenses for one month", "completed": False, "type": "Side Quest"},
+    #         {"title": "Pay at least $50 toward debt this month", "completed": False, "type": "Side Quest"},
+    #         {"title": "Save 10% of your income this month", "completed": False, "type": "Main Quest"},
+    #     ]
+
+    def render_quests(self):
+        # Clear old UI
+        for widget in self.quests_frame.winfo_children():
+            widget.destroy()
+        self.quest_vars.clear()
+
+        for index, quest in enumerate(self.quests):
+            row = tk.Frame(self.quests_frame, bg="white")
+            row.pack(anchor="w", pady=4, fill="x")
+
+            var = tk.BooleanVar(value=quest.get("completed", False))
+
+            # Checkbox
+            cb = tk.Checkbutton(
+                row,
+                variable=var,
+                command=lambda v=var, q=quest: self.toggle_quest(v, q),
+                bg="white",
+                activebackground="white"
+            )
+            cb.pack(side="left")
+
+            # Title
+            label = tk.Label(
+                row,
+                text=quest["title"],
+                font=("Montserrat", 11),
+                bg="white",
+                fg="#1E3A8A" if not quest["completed"] else "#9E9E9E",
+                wraplength=500,
+            )
+            label.pack(side="left", padx=5)
+
+            # DELETE BUTTON
+            delete_btn = tk.Button(
+                row,
+                text="✖",
+                font=("Montserrat", 10, "bold"),
+                fg="white",
+                bg="#F44336",
+                width=2,
+                command=lambda i=index: self.delete_quest(i)
+            )
+            delete_btn.pack(side="right", padx=5)
+
+            self.quest_vars.append((var, quest, label))
+
+
+    # ---------- UPDATE QUEST ----------
+    def toggle_quest(self, var, quest):
+        quest["completed"] = bool(var.get())
+        self.controller.user_data["goals"] = self.quests
+        self.controller.save_user_data()
+
+    # ---------- DELETE QUEST ----------
+    def delete_quest(self, index):
+        del self.quests[index]
+        self.controller.user_data["goals"] = self.quests
+        self.controller.save_user_data()
+        self.render_quests()
+
+    # ---------- ADD QUEST ----------
+    def add_custom_quest(self):
+        title = self.new_quest_entry.get().strip()
+        if not title:
+            messagebox.showerror("Oops!", "Please enter a quest name.")
+            return
+
+        self.quests.append({"title": title, "completed": False})
+        self.new_quest_entry.delete(0, tk.END)
+
+        self.controller.user_data["goals"] = self.quests
+        self.controller.save_user_data()
+        self.render_quests()
+
+    # ---------- SAVINGS VIEW ----------
+    def show_savings(self):
+        savings = self.controller.user_data.get("savings", 0)
+
+        messagebox.showinfo(
+            "Savings Report",
+            f"💰 Current Savings: ${savings:.2f}\n\n"
+            "More analytics coming soon!"
+        )
+
+# -------------------------------------------------------
+# Run Application
+# -------------------------------------------------------
+if __name__ == "__main__":
+    app = CapitalChroniclesApp()
+    app.mainloop()

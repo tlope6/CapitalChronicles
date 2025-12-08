@@ -10,7 +10,13 @@
       "net_income": 1020.0,
       "total_expenses": 980.0,
       "leftover": 220.0,
-      "status": "Student"
+      "status": "Student",
+      "goals": [
+        {
+          "title": "Save money for mom's bday",
+          "completed": false
+        }
+      ]
     }
   }
 }
